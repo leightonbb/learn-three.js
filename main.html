@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+
+<body>
+
+    <div style="height:250px; width: 250px;" id="three"></div>
+
+    <script src="js/three.min.js"></script>
+    <script>
+        var div = document.getElementById('three');
+        var renderer = new THREE.WebGLRenderer({ alpha: true });
+        const width = 500
+        const height = 500
+        renderer.setSize(width, height);
+        div.appendChild(renderer.domElement);
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(70, width / height, 1, 1000);
+        camera.position.z = 400;
+
+        var cube = new THREE.CubeGeometry(100, 100, 100);
+
+        var mesh
+
+        var textureLoader = new THREE.TextureLoader()
+        // var texture = THREE.ImageUtils.loadTexture('texture.gif');
+        textureLoader.load('texture.gif',
+            texture => {
+                texture.anisotropy = renderer.getMaxAnisotropy();
+
+                var material = new THREE.MeshBasicMaterial({ map: texture });
+                mesh = new THREE.Mesh(cube, material);
+                scene.add(mesh);
+            })
+
+        // const arrow1 = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), 150)
+        var geometry = new THREE.CylinderGeometry(20, 20, 200, 32);
+        var material = new THREE.MeshLambertMaterial({ color: 0xffff00 });
+        var cylinder = new THREE.Mesh(geometry, material);
+        cylinder.position.set(0, 100, 0)
+
+        var coneGeometry = new THREE.ConeGeometry(40, 50, 32);
+        var cone = new THREE.Mesh(coneGeometry, material);
+        cone.position.set(0,200,0)
+
+        var bigArrow = new THREE.Group();
+        bigArrow.add(cylinder);
+        bigArrow.add(cone)
+
+        scene.add(bigArrow);
+        // arrow1.position.set(0, 0, 0);
+
+        // scene.add(arrow1);
+
+        var light = new THREE.AmbientLight(0xFFFFFF, .3); // soft white light
+        // scene.add(light);
+
+        // White directional light at half intensity shining from the top.
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(100, 100, 500)
+
+        scene.add(directionalLight);
+
+        var light = new THREE.PointLight(0xffffff, 1, 10000);
+        light.position.set(50, 50, 500);
+        // scene.add(light);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            mesh.rotation.x += 0.005;
+            mesh.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate()
+    </script>
+</body>
+
+</html>
